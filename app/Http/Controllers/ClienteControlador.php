@@ -13,6 +13,14 @@ class ClienteControlador extends Controller
         ['id'=>3, 'nome'=> 'Joao'],
         ['id'=>4, 'nome'=> 'Rafael']
     ];
+
+    public function __construct()
+    {
+        $clientes = session('clientes');
+        if(!isset($clientes)){
+            session(['clientes'=> $this->clientes]);
+        }
+    }
     /**
      * Display a listing of the resource.
      *
@@ -20,7 +28,7 @@ class ClienteControlador extends Controller
      */
     public function index()
     {
-        $clientes = $this->clientes;
+        $clientes = session('clientes');
         return view('clientes.index',compact('clientes'));
     }
 
@@ -31,7 +39,7 @@ class ClienteControlador extends Controller
      */
     public function create()
     {
-        //
+        return view ('clientes.create');
     }
 
     /**
@@ -42,7 +50,12 @@ class ClienteControlador extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $clientes = session('clientes');
+        $id = count($clientes) + 1;
+        $dados = ['id'=> $id, 'nome'=> $request->nome];
+        $clientes[] = $dados;
+        session(['clientes'=>$clientes]);
+        return redirect()->route('clientes.index');
     }
 
     /**
@@ -53,7 +66,9 @@ class ClienteControlador extends Controller
      */
     public function show($id)
     {
-        //
+        $clientes = session('clientes');
+        $cliente = $clientes[$id -1];
+        return view('clientes.info', compact('cliente'));
     }
 
     /**
